@@ -1,0 +1,3 @@
+*.iso
+build/**
+i686-elf
