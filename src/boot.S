@@ -6,13 +6,21 @@
 .set CHECKSUM, -(MAGIC + ARCH + HEADER_LENGTH)                  //added to ‘magic’,‘architecture’,‘header_length’, = zero.
 
 .section .multiboot
+.align 8
 multiboot2_header:
-.align 4
 .long MAGIC
 .long ARCH 
 .long HEADER_LENGTH 
 .long CHECKSUM
+
+/*tags*/
+.align 8
+/*end tag*/
+.long 0 /*type=0 (end)*/
+.long 8 /*size=8*/
 multiboot2_header_end:
+
+.section .bss
 
 .section .text
 .global _start

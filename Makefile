@@ -21,7 +21,7 @@ grub_image: build $(BIN_IMAGE)
 
 
 build: linker.ld $(OBJS)
-	$(CC) -T linker.ld -o $(BIN_IMAGE) $(OBJS) -ffreestanding -O2 -nostdlib -lgcc
+	./i686-elf/bin/i686-elf-ld -T linker.ld -o $(BIN_IMAGE) $(OBJS)
 
 
 $(BUILD)/%.o: $(SRC)/%.S

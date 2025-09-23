@@ -1,3 +1,4 @@
 *.iso
 build/**
 i686-elf
+isodir/boot/damos.bin
