@@ -3,7 +3,8 @@ SRC := src
 BUILD := build
 DEPS := $(shell find $(SRC) -type f -name "*.S")
 OBJS := $(patsubst $(SRC)/%.S,$(BUILD)/%.o,$(DEPS))
-CC := ./i686-elf/bin/i686-elf-gcc
+# CC := ./i686-elf/bin/i686-elf-gcc
+CC := gcc
 CFLAGS := -std=gnu99 -ffreestanding -O2 
 WARNINGS := -Wall -Wextra
 
@@ -21,7 +22,7 @@ grub_image: build $(BIN_IMAGE)
 
 
 build: linker.ld $(OBJS)
-	./i686-elf/bin/i686-elf-ld -T linker.ld -o $(BIN_IMAGE) $(OBJS)
+	ld -T linker.ld -o $(BIN_IMAGE) $(OBJS)
 
 
 $(BUILD)/%.o: $(SRC)/%.S

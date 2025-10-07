@@ -14,7 +14,6 @@ multiboot2_header:
 .long CHECKSUM
 
 /*tags*/
-.align 8
 /*end tag*/
 .long 0 /*type=0 (end)*/
 .long 8 /*size=8*/
@@ -25,5 +24,8 @@ multiboot2_header_end:
 .section .text
 .global _start
 _start:
-  _loop: jmp _loop
+  hlt
+_hlt: 
+  cli
+  jmp _hlt
 
