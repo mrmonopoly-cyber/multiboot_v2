@@ -3,10 +3,10 @@ SRC := src
 BUILD := build
 DEPS := $(shell find $(SRC) -type f -name "*.S")
 OBJS := $(patsubst $(SRC)/%.S,$(BUILD)/%.o,$(DEPS))
-# CC := ./i686-elf/bin/i686-elf-gcc
-CC := gcc
-CFLAGS := -std=gnu99 -ffreestanding -O2 
-WARNINGS := -Wall -Wextra
+CC := nasm
+LD := ./i686-elf/bin/i686-elf-ld
+CFLAGS := -f elf32
+WARNINGS := 
 
 all: build grub_image run
 
@@ -14,7 +14,7 @@ show:
 	$(info $(DEPS))
 
 run: grub_image
-	qemu-system-i386 -cdrom damos.iso
+	qemu-system-i386 -serial stdio -cdrom damos.iso
 
 grub_image: build $(BIN_IMAGE)
 	$(shell  if ! grub-file --is-x86-multiboot2 $(BIN_IMAGE); then echo "damos.bin is not valid x86-multiboot format"; fi)
@@ -22,12 +22,12 @@ grub_image: build $(BIN_IMAGE)
 
 
 build: linker.ld $(OBJS)
-	ld -T linker.ld -o $(BIN_IMAGE) $(OBJS)
+	$(LD) -T linker.ld -o $(BIN_IMAGE) $(OBJS)
 
 
 $(BUILD)/%.o: $(SRC)/%.S
 	@mkdir -p $(dir $@)
-	$(CC) -c -o $@ $< $(CFLAGS) $(WARNINGS)
+	$(CC) -o $@ $< $(CFLAGS) $(WARNINGS)
 
 clean:
 	rm -rf ./isodir/boot/*.bin *.iso ./build/*
