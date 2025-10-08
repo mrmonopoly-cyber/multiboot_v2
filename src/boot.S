@@ -79,41 +79,43 @@ write_base_u8_int:
   xor ecx, ecx
   xor edx, edx
 
+  ;creating new space on the stack
   push ebp
   mov ebp, esp
   sub esp, 4
 
-  mov dword [ebp-4], 0
+  mov dword [ebp-4], 0;counter initialization
   mov ebx, [ebp+8];value
 
 .store_unit:
-  mov eax, ebx
-  mov edx, 0
-  mov ecx, [ebp+12]
-  div ecx               ; EAX = value / 10 (tens), EDX = value % 10 (units)
+  ;division preparation
+  mov eax, ebx;numerator
+  mov edx, 0;init result
+  mov ecx, [ebp+12] ;denominator, base
+  div ecx           ; EAX = value / 10 (tens), EDX = value % 10 (units)
 
-  push edx
-  inc dword [ebp-4]
+  push edx; save on stack the digit to print for later
+  inc dword [ebp-4] ;increment the counter
 
-  cmp eax, 0
+  cmp eax, 0; if the are no more digits
   je .print_digits
-  mov ebx, eax
+  mov ebx, eax; else save result of division on ebx as the new value
   jmp .store_unit
   
 .print_digits:
-  mov ecx, [ebp-4]
+  mov ecx, [ebp-4]; store counter to ecx
 .print_digits_loop:
-  cmp ecx, 0
+  cmp ecx, 0; if no more digit to print
   je .exit
 
-  call write_base_10_unit
-  pop eax
-  dec ecx
+  call write_base_10_unit;print the digit on top of the stack
+  pop eax;pop the printed digit
+  dec ecx;decrease the counter
   jmp .print_digits_loop
 
 .exit:
-  mov esp, ebp
-  pop ebp
+  mov esp, ebp;restore old stack frame pointer
+  pop ebp;clear stack
   ret
 
 
