@@ -34,7 +34,8 @@ global _start
 _start:
   mov esp, stack_end
 
-  push dword 58
+  push dword 32
+  push dword 32
   call write_base_u8_int
   add esp, 8
 
@@ -70,6 +71,7 @@ write_base_10_unit:
 ;stack_layout:
 ;+0: ret ptr
 ;+4: byte value
+;+8: base 
 write_base_u8_int:
   ;clean up
   xor eax, eax
@@ -77,27 +79,41 @@ write_base_u8_int:
   xor ecx, ecx
   xor edx, edx
 
-  mov ebx, [esp +4]; value
+  push ebp
+  mov ebp, esp
+  sub esp, 4
 
+  mov dword [ebp-4], 0
+  mov ebx, [ebp+8];value
+
+.store_unit:
   mov eax, ebx
   mov edx, 0
-  mov ecx, 10
+  mov ecx, [ebp+12]
   div ecx               ; EAX = value / 10 (tens), EDX = value % 10 (units)
 
   push edx
-  push eax
+  inc dword [ebp-4]
 
-  pop eax
-  push eax
-  call write_base_10_unit
-  add esp, 4
+  cmp eax, 0
+  je .print_digits
+  mov ebx, eax
+  jmp .store_unit
+  
+.print_digits:
+  mov ecx, [ebp-4]
+.print_digits_loop:
+  cmp ecx, 0
+  je .exit
 
-  pop eax
-  push eax
   call write_base_10_unit
-  add esp, 4
+  pop eax
+  dec ecx
+  jmp .print_digits_loop
+
 .exit:
-
+  mov esp, ebp
+  pop ebp
   ret
 
 
