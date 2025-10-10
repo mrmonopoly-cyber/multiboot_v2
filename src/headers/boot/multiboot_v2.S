@@ -1,4 +1,4 @@
-%define MULTIBOOT_V2_COMPLIANT_CHECK
+%define MULTIBOOT_V2_COMPLIANT_CHECK 0x36d76289
 
 ;check if the registers are in a valid state right after the _start
 ;stack layout:

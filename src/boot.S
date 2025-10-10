@@ -7,6 +7,12 @@
 %include "./src/headers/boot/multiboot_v2.h"
 %endif
 
+section .rodata
+align 4
+valid_boot: db 'valid_boot',NEWLINE
+
+section .data
+
 section .bss
 stack_start:
 resb 16384 ;16KB
@@ -31,10 +37,3 @@ _start:
 
 _hlt: 
   jmp _hlt
-
-
-section .rodata
-align 4
-valid_boot: db 'valid_boot',NEWLINE
-
-section .data
