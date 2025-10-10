@@ -19,8 +19,17 @@ dd HEADER_LENGTH
 dd CHECKSUM
 
 ;*tags
+framebuffer_tag:
+dw 5 ;type=5 (frame buffer)
+dw 0 ;flags
+dd (framebuffer_tag_end - framebuffer_tag);size
+dd 0;width
+dd 0;height
+dd 0;depth
+framebuffer_tag_end:
 
-dd 0 ;type=0 (end)
+end_tag:
+dw 0 ;type=0 (end)
 dd 8 ;size=8
 multiboot2_header_end:
 
@@ -32,7 +41,13 @@ stack_end:
 section .text
 global _start
 _start:
+  cli
   mov esp, stack_end
+
+  push dword 10
+  push ebx
+  call write_base_u8_int
+  add esp, 8
 
   push dword 32
   push dword 32
@@ -47,7 +62,6 @@ _start:
   add esp, 4
 
 _hlt: 
-  cli
   jmp _hlt
 
 
