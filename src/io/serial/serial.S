@@ -1,6 +1,6 @@
 %define COM1 0x3F8
 
-extern outb
+%include "./src/io/io.h"
 
 ;print a base 10 number to COM1 port
 ;stack_layout:
@@ -75,7 +75,7 @@ write_base_u8_int:
 ;print newline to COM1 port
 ;stack_layout:
 ;+0: ret ptr
-global write_new_line
+global write_new_line:
 write_new_line:
   push dword 0xD;\r
   push dword COM1
@@ -92,7 +92,6 @@ write_new_line:
 ;stack_layout:
 ;+0: ret ptr
 ;+4: byte value
-global write_char
 write_char:
   ;clean up
   xor eax, eax
@@ -113,7 +112,7 @@ write_char:
 ;stack layout:
 ;+0: ret ptr
 ;+4: str ptr
-global write_str
+global write_str:
 write_str:
   mov esi, [esp + 4]
 

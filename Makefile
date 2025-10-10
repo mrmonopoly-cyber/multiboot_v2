@@ -1,3 +1,7 @@
+###USER INPUTS
+BOOT_SYSTEM ?= MULTIBOOT_V2
+####
+
 BIN_IMAGE := isodir/boot/damos.bin
 SRC := src
 BUILD := build
@@ -7,6 +11,7 @@ CC := nasm
 LD := ./i686-elf/bin/i686-elf-ld
 CFLAGS := -f elf32
 WARNINGS := 
+FEATURES := -D$(BOOT_SYSTEM)
 
 all: build grub_image run
 
@@ -27,7 +32,7 @@ build: linker.ld $(OBJS)
 
 $(BUILD)/%.o: $(SRC)/%.S
 	@mkdir -p $(dir $@)
-	$(CC) -o $@ $< $(CFLAGS) $(WARNINGS)
+	$(CC) -o $@ $< $(CFLAGS) $(FEATURES) $(WARNINGS)
 
 clean:
 	rm -rf ./isodir/boot/*.bin *.iso ./build/*

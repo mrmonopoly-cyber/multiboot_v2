@@ -1,12 +1,11 @@
+%include "./src/io/serial/serial.h"
+
 %define NEWLINE 0x0D,0x0A; \r\n
 %define CHAR_0 0x30
 
-extern write_base_u8_int
-extern write_new_line
-extern write_str
-
-%include "./src/headers/boot/multiboot_v2.mem"
-
+%ifdef MULTIBOOT_V2
+%include "./src/headers/boot/multiboot_v2.h"
+%endif
 
 section .bss
 stack_start:

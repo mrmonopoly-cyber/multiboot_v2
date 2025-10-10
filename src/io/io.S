@@ -1,9 +1,10 @@
+%include "./src/io/io.h"
+
 ;print a byte on a port
 ;stack layout:
 ;+0: ret ptr
 ;+4: port
 ;+8: value
-global outb
 outb:
   xor eax, eax
   xor edx, edx
