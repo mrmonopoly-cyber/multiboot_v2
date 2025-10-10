@@ -1,5 +1,7 @@
 %include "./src/io/io.h"
 
+section .text
+
 ;print a byte on a port
 ;stack layout:
 ;+0: ret ptr

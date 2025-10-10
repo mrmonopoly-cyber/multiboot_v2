@@ -1,7 +1,7 @@
 %include "./src/io/serial/serial.h"
+%include "./src/headers/boot.h"
 
 %define NEWLINE 0x0D,0x0A; \r\n
-%define CHAR_0 0x30
 
 %ifdef MULTIBOOT_V2
 %include "./src/headers/boot/multiboot_v2.h"
@@ -15,30 +15,26 @@ stack_end:
 section .text
 global _start
 _start:
-  cli
-  mov esp, stack_end
+  cli; disable interrupt
+  mov esp, stack_end ;setup stack
 
-  push dword 10
-  push ebx
-  call write_base_u8_int
-  add esp, 8
-
-  push dword 32
-  push dword 32
-  call write_base_u8_int
-  add esp, 8
-
-  call write_new_line
+  call check_boot ;check boot
   add esp, 4
 
-  push dword hello
+  push valid_boot ;print valid boot on serial
   call write_str
   add esp, 4
+
+  mov esi, ebx ;save on esi ptr to information structure
+
+  ;;application
 
 _hlt: 
   jmp _hlt
 
 
-section .data
+section .rodata
 align 4
-hello: db 'hello',NEWLINE
+valid_boot: db 'valid_boot',NEWLINE
+
+section .data

@@ -2,6 +2,7 @@
 
 %include "./src/io/io.h"
 
+section .text
 ;print a base 10 number to COM1 port
 ;stack_layout:
 ;+0: ret ptr
