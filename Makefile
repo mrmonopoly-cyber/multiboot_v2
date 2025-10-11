@@ -7,10 +7,12 @@ SRC := src
 BUILD := build
 DEPS := $(shell find $(SRC) -type f -name "*.S")
 OBJS := $(patsubst $(SRC)/%.S,$(BUILD)/%.o,$(DEPS))
-CC := nasm
+ASM := nasm
+CC := ./i686-elf/bin/i686-elf-gcc
 LD := ./i686-elf/bin/i686-elf-ld
-CFLAGS := -f elf32
-WARNINGS := 
+AFLAGS := -f elf32
+CFLAGS := -ffrestanding -nostdlib
+WARNINGS :=  -Wall -Wextra
 FEATURES := -D$(BOOT_SYSTEM)
 
 all: build grub_image run
@@ -31,6 +33,10 @@ build: linker.ld $(OBJS)
 
 
 $(BUILD)/%.o: $(SRC)/%.S
+	@mkdir -p $(dir $@)
+	$(ASM) -o $@ $< $(AFLAGS) $(FEATURES)
+
+$(BUILD)/%.o: $(SRC)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) -o $@ $< $(CFLAGS) $(FEATURES) $(WARNINGS)
 
