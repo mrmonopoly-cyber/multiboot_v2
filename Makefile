@@ -12,7 +12,7 @@ ASM := nasm
 CC := x86_64-elf-gcc
 LD := x86_64-elf-ld
 AFLAGS := -f elf64
-CFLAGS := -ffreestanding -nostdlib -fno-stack-protector -mno-red-zone -m64 $(EXTRA)
+CFLAGS := -ffreestanding -nostdlib -m64 $(EXTRA)
 WARNINGS :=  -Wall -Wextra
 FEATURES := -D$(BOOT_SYSTEM)
 
@@ -24,7 +24,14 @@ show:
 	$(info $(DEPS))
 
 run: grub_image
-	qemu-system-x86_64 -s -S -bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd -serial stdio -cdrom damos.iso &
+	qemu-system-x86_64 \
+		-s -S \
+		-bios /usr/share/edk2-ovmf/x64/OVMF.4m.fd\
+		-serial none\
+		-cdrom damos.iso \
+		-net none \
+		&
+	gdb
 
 grub_image: $(BIN_IMAGE)
 	$(shell  if ! grub-file --is-x86-multiboot2 $(BIN_IMAGE); then echo "damos.bin is not valid x86-multiboot format"; fi)
