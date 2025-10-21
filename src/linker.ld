@@ -2,7 +2,7 @@ ENTRY(_start)
 
 SECTIONS
 {
-  . = 4K;
+  . = 1M;
 
   .text BLOCK(4K) : ALIGN(8)
   {
