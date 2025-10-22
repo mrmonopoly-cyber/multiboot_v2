@@ -2,7 +2,7 @@
 
 #define V2_MAGIC (0xE85250D6)
 #define V2_ARCH (0)
-#define HEADER_LENGTH ((uint32_t) sizeof(multiboot_v2) + 2 * (uint32_t) sizeof(MulitbootGeneralTag))
+#define HEADER_LENGTH(TAGS_NUM) ((uint32_t) sizeof(multiboot_v2) + TAGS_NUM * (uint32_t) sizeof(MulitbootGeneralTag))
 
 typedef struct
 {
@@ -14,7 +14,7 @@ typedef struct
 #define END_TAG (MulitbootGeneralTag){.type=0, .flags=0, .size=8,}
 #define EFI_BOOT_SERIVE_TAG (MulitbootGeneralTag){.type=7, .flags=0, .size=8,}
 
-static struct 
+typedef struct __attribute__((aligned(8)))
 {
   uint32_t magic;
   uint32_t arch;
@@ -23,12 +23,15 @@ static struct
 
   MulitbootGeneralTag tags[];
 
-}multiboot_v2 = 
+}MultibootV2Header;
+
+__attribute__((__section__(".multiboot")))
+MultibootV2Header multiboot_v2 = 
 {
   .magic = V2_MAGIC,
   .arch = V2_ARCH,
-  .header_length = HEADER_LENGTH,
-  .checksum = -(V2_MAGIC + V2_ARCH + HEADER_LENGTH),
+  .header_length = HEADER_LENGTH(2),
+  .checksum = -(V2_MAGIC + V2_ARCH + HEADER_LENGTH(2)),
 
   .tags = 
   {
